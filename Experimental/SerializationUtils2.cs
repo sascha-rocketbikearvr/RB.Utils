@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 
-namespace RB.Utils {
+namespace RB.Utils.Experimental {
     public static class SerializationUtils2 {
 
         [Serializable]

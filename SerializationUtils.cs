@@ -184,15 +184,18 @@ namespace RB.Utils {
                 var assemblyName = TypeName.Substring(0, TypeName.IndexOf('.'));
 
                 // Attempt to load the indicated Assembly
-                var assembly = Assembly.Load(assemblyName);
-                if (assembly == null)
-                    return null;
-
-                // Ask that assembly to return the proper Type
-                type = assembly.GetType(TypeName);
-                if (type != null)
-                    return type;
-
+                try {
+                    var assembly = Assembly.Load(assemblyName);
+                    if (assembly != null) {
+                        // Ask that assembly to return the proper Type
+                        type = assembly.GetType(TypeName);
+                        if (type != null) {
+                            return type;
+                        }
+                    }
+                } catch (Exception e) {
+                    Debug.LogWarning(e);
+                }
             }
 
             // If we still haven't found the proper type, we can enumerate all of the 

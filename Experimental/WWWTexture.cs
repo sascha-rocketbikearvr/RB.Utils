@@ -17,26 +17,29 @@ namespace RB.Utils.Experimental {
 
         public IPromise<Texture2D> Texture {
             get {
-                if (_texture != null) {
-                    return Promise<Texture2D>.Resolved(_texture);
-                } else if (_www != null) {
-                    return PromiseUtils.WrapCoroutine<IEnumerator>(_waitForTexture())
-                        .Then<Texture2D>(enumerator => {
-                            return _texture;
-                        });
-                } else {
-                    _www = new WWW(_url);
-                    return PromiseUtils.WrapCoroutine<WWW>(_www)
-                        .Then<Texture2D>(www => {
-                            if (www.isDone && www.error == null) {
-                                _texture = www.texture;
-                            } else {
-                                Debug.LogError(www.error);
-                                _texture = Texture2D.whiteTexture;
-                            }
-                            return _texture;
-                        });
-                }
+				if (_texture != null) {
+					return Promise<Texture2D>.Resolved(_texture);
+				} else if (_www != null) {
+					return PromiseUtils.WrapCoroutine<IEnumerator>(_waitForTexture())
+						.Then<Texture2D>(enumerator => {
+							return _texture;
+						});
+				} else if (_url == null) {
+					_texture = Texture2D.blackTexture;
+					return Promise<Texture2D>.Resolved(_texture);
+				} else {
+					_www = new WWW(_url);
+					return PromiseUtils.WrapCoroutine<WWW>(_www)
+						.Then<Texture2D>(www => {
+							if (www.isDone && www.error == null) {
+								_texture = www.texture;
+							} else {
+								Debug.LogError(www.error);
+								_texture = Texture2D.whiteTexture;
+							}
+							return _texture;
+						});
+				}
             }
         }
 
